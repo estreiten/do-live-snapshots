@@ -1,0 +1,16 @@
+{
+  "name": "do-live-snapshots",
+  "version": "1.0.0",
+  "description": "Trigger DigitalOcean live snapshots",
+  "main": "server.js",
+  "author": "Ezequiel Streitenberger <ezequiel@estreiten.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/estreiten/do-live-snapshots.git"
+  },
+  "homepage": "https://github.com/estreiten/do-live-snapshots",
+  "license": "see license in LICENSE file located at the root",
+  "dependencies": {
+    "digitalocean": "^1.2.1"
+  }
+}
