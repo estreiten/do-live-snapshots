@@ -9,7 +9,7 @@ const log = (txt) => {
   const logTxt = `${today} || ${txt}`
   console.log(logTxt)
   if (config.logFile) {
-    fs.appendFileSync(config.logFile, logTxt)
+    fs.appendFileSync(config.logFile, logTxt + '\n')
   }
 }
 
@@ -25,7 +25,7 @@ client.droplets.list().then(function (droplets) {
             reject(err)
           } else {
             const snapshot = snapshots.find(snapshot => new Date(snapshot.created_at).toDateString() === new Date().toDateString())
-            resolve(snapshot)
+            resolve({droplet, snapshot})
           }
         })
       }, waitTime * 60000)
@@ -33,8 +33,17 @@ client.droplets.list().then(function (droplets) {
       reject(err)
     }
   })
-}).then(function (snapshot) {
+}).then(async function ({droplet, snapshot}) {
+  if (config.delete) {
+    const snapshots = await client.droplets.snapshots(droplet.id)
+    if (snapshots.length > config.delete.maxCount) {
+      log(`There are more than "${config.delete.maxCount}" snapshots. Proceeding to remove the oldest..`)
+      const oldestSnapshot = snapshots.sort((a, b) => new Date(a.created_at) - new Date(b.created_at))[0]
+      await client.snapshots.delete(oldestSnapshot.id)
+      log(`Oldest snapshot "${oldestSnapshot.name}", created at ${new Date(oldestSnapshot.created_at).toTimeString()}, was deleted.`)
+    }
+  }
   log(`Snapshot "${snapshot.name}" created at ${new Date(snapshot.created_at).toTimeString()}`)
 }).catch(function (err) {
-  log(`Snapshot creation failed`, err)
+  log(`Snapshot creation failed \n${err}`)
 });
