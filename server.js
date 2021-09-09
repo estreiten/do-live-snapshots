@@ -19,7 +19,7 @@ client.droplets.list().then(function (droplets) {
       const droplet = droplets.find(droplet => droplet.name === config.droplet);
       await client.droplets.snapshot(droplet.id);
       log(`Snapshot creation started. Waiting ${waitTime} minutes to finish..`)
-      setTimeout(() => {
+      setTimeout(async () => {
         const snapshots = await client.droplets.snapshots(droplet.id)
         const snapshot = snapshots.find(snapshot => new Date(snapshot.created_at).toDateString() === new Date().toDateString())
         resolve({droplet, snapshot})
