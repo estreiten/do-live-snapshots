@@ -41,4 +41,5 @@ client.droplets.list().then(function (droplets) {
   log(`Snapshot "${snapshot.name}" created at ${new Date(snapshot.created_at).toTimeString()}`)
 }).catch(function (err) {
   log(`Snapshot creation failed \n${err}`)
+  throw err
 });
